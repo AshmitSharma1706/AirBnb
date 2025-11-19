@@ -1,22 +1,27 @@
 package com.project.airBnb.service.impl;
 
 import com.project.airBnb.dto.HotelDto;
+import com.project.airBnb.dto.HotelInfoDto;
+import com.project.airBnb.dto.RoomDto;
 import com.project.airBnb.entity.Hotel;
+import com.project.airBnb.entity.Room;
 import com.project.airBnb.exception.ResourceNotFoundException;
 import com.project.airBnb.repository.HotelRepository;
 import com.project.airBnb.service.HotelService;
+import com.project.airBnb.service.InventoryService;
+import com.project.airBnb.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +30,8 @@ import java.util.stream.Collectors;
 public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
+    private final InventoryService inventoryService;
+    private final RoomService roomService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -72,16 +79,21 @@ public class HotelServiceImpl implements HotelService {
         return modelMapper.map(hotelRepository.save(hotel), HotelDto.class);
     }
 
+    @Transactional
     @Override
     public Boolean deleteHotelById(Long id) {
         log.info("Deleting hotel with id: {}", id);
         hotelExistById(id);
-        //TODO: delete the future inventories for this hotel
+        Hotel hotel = hotelRepository.findById(id).get();
+        for(Room room:hotel.getRooms()){
+            roomService.deleteRoomById(room.getId());
+        }
         hotelRepository.deleteById(id);
         return true;
     }
 
     @Override
+    @Transactional
     public String activateHotelById(Long id) {
         log.info("Activating hotel with id: {}", id);
         hotelExistById(id);
@@ -90,9 +102,21 @@ public class HotelServiceImpl implements HotelService {
             return "Hotel with id "+id+" is already active";
         }else {
             hotel.setActive(true);
+            for (Room room:hotel.getRooms()){
+                inventoryService.initializeRoomForAYear(room);
+            }
             hotelRepository.save(hotel);
             return "Hotel with id " + id + " is activated";
         }
+    }
+
+    @Override
+    public HotelInfoDto getHotelInfoById(Long id) {
+        hotelExistById(id);
+        Hotel hotel=hotelRepository.findById(id).get();
+        List<RoomDto> rooms= hotel.getRooms().stream()
+                .map((element) -> modelMapper.map(element, RoomDto.class)).toList();
+        return new HotelInfoDto(modelMapper.map(hotel, HotelDto.class), rooms);
     }
 
     private void hotelExistById(Long id){

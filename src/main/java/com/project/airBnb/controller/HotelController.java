@@ -1,5 +1,6 @@
 package com.project.airBnb.controller;
 
+import com.project.airBnb.advice.ApiResponse;
 import com.project.airBnb.dto.HotelDto;
 import com.project.airBnb.service.HotelService;
 import lombok.RequiredArgsConstructor;
@@ -42,13 +43,13 @@ public class HotelController {
     }
 
     @PatchMapping("/activate/{id}")
-    public ResponseEntity<String> activateHotelById(@PathVariable Long id){
-        return ResponseEntity.ok(hotelService.activateHotelById(id));
+    public ResponseEntity<ApiResponse<String>> activateHotelById(@PathVariable Long id){
+        return ResponseEntity.ok(new ApiResponse<>(hotelService.activateHotelById(id)));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteHotelById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<Boolean>> deleteHotelById(@PathVariable Long id){
         boolean deleted= hotelService.deleteHotelById(id);
-        return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
+        return deleted ? ResponseEntity.ok(new ApiResponse<>(true)) : ResponseEntity.notFound().build();
     }
 }
