@@ -14,4 +14,7 @@ public interface RoomService {
     Optional<RoomDto> getRoomById(Long id);
 
     Boolean deleteRoomById(Long id);
+
+    RoomDto updateRoomById(Long hotelId, Long roomId, RoomDto roomDto);
+
 }

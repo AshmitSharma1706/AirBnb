@@ -12,6 +12,7 @@ import com.project.airBnb.repository.HotelRepository;
 import com.project.airBnb.service.HotelService;
 import com.project.airBnb.service.InventoryService;
 import com.project.airBnb.service.RoomService;
+import com.project.airBnb.util.AppUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -65,11 +66,12 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public List<HotelDto> getAllHotels() {
-        log.info("Finding all hotels...");
-        List<HotelDto> hotels = new ArrayList<>();
-        List<Hotel> hotelList= hotelRepository.findAll();
-        return hotelList.stream().
-                map(hotel -> modelMapper.map(hotel, HotelDto.class)).toList();
+        User user = AppUtils.getCurrentUser();
+        log.info("Finding all hotels for the admin user with id {}", user.getId());
+        List<Hotel> hotels= hotelRepository.findByOwner(user);
+        return hotels.stream().
+                map(hotel -> modelMapper.map(hotel, HotelDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.project.airBnb.repository.HotelRepository;
 import com.project.airBnb.repository.RoomRepository;
 import com.project.airBnb.service.InventoryService;
 import com.project.airBnb.service.RoomService;
+import com.project.airBnb.util.AppUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -83,6 +84,31 @@ public class RoomServiceImpl implements RoomService {
         inventoryService.deleteAllInventories(room);
         roomRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    @Transactional
+    public RoomDto updateRoomById(Long hotelId, Long roomId, RoomDto roomDto) {
+        log.info("Updating the room with ID: {}", roomId);
+        Hotel hotel = hotelRepository
+                .findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId));
+
+        User user = AppUtils.getCurrentUser();
+        if(!user.equals(hotel.getOwner())) {
+            throw new UnAuthorisedException("This user does not own this hotel with id: "+hotelId);
+        }
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found with ID: "+roomId));
+
+        modelMapper.map(roomDto, room);
+        room.setId(roomId);
+
+//        TODO: if price or inventory is updated, then update the inventory for this room
+        room = roomRepository.save(room);
+
+        return modelMapper.map(room, RoomDto.class);
     }
 
     private void roomExistById(Long id){

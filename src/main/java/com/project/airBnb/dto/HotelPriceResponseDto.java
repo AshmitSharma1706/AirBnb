@@ -1,21 +1,19 @@
 package com.project.airBnb.dto;
 
 import com.project.airBnb.entity.HotelContactInfo;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class HotelDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class HotelPriceResponseDto {
     private Long id;
-
     private String name;
-
     private String city;
-
-    private HotelContactInfo hotelContactInfo;
-
     private String[] photos;
-
     private String[] amenities;
-
-    private Boolean active;
+    private HotelContactInfo contactInfo;
+    private Double price;
 }

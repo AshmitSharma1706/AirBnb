@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class ContactInfo {
+public class HotelContactInfo {
     private String address;
     private String phoneNumber;
     private String email;

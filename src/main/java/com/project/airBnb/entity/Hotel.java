@@ -28,7 +28,7 @@ public class Hotel {
     private String city;
 
     @Embedded
-    private ContactInfo contactInfo;
+    private HotelContactInfo hotelContactInfo;
 
     @CreationTimestamp
     @Column(nullable = false)
