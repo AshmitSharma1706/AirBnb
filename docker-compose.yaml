@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: airbnb-postgres
+    environment:
+      POSTGRES_DB: AirBnb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    image: airbnb-app
+    container_name: airbnb-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST_URL: postgres
+      DB_NAME: AirBnb
+      DB_USERNAME: postgres
+      DB_PASSWORD: admin
+      PORT: 8080
+
+volumes:
+  pgdata:
