@@ -1,9 +1,6 @@
 package com.project.airBnb.controller;
 
-import com.project.airBnb.dto.HotelDto;
-import com.project.airBnb.dto.HotelInfoDto;
-import com.project.airBnb.dto.HotelPriceDto;
-import com.project.airBnb.dto.HotelSearchRequest;
+import com.project.airBnb.dto.*;
 import com.project.airBnb.service.HotelService;
 import com.project.airBnb.service.InventoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +19,7 @@ public class HotelBrowseController {
 
     @GetMapping("/search")
     @Operation(summary = "Search hotels", tags = {"Browse Hotels"})
-    public ResponseEntity<Page<HotelPriceDto>> searchHotels(@RequestBody HotelSearchRequest searchRequest){
+    public ResponseEntity<Page<HotelPriceResponseDto>> searchHotels(@RequestBody HotelSearchRequest searchRequest){
         return ResponseEntity.ok(inventoryService.searchHotels(searchRequest));
     }
 
