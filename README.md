@@ -55,11 +55,11 @@ This project demonstrates real-world backend engineering practices including:
 
   Layer	                |             Responsibility
   ----------------------|----------------------------------------------------
-  Controller	          |             Handles HTTP requests and responses
-  Service	              |             Business rules, validations, workflows
-  Repository	          |             Database operations using JPA
+  Controller	        |             Handles HTTP requests and responses
+  Service	            |             Business rules, validations, workflows
+  Repository	        |             Database operations using JPA
   Security	            |             JWT filters & authorization
-  Swagger	              |             Interactive API documentation
+  Swagger	            |             Interactive API documentation
 
 
 **Authentication & Security**
@@ -94,14 +94,20 @@ This project demonstrates real-world backend engineering practices including:
 
 **Configure application.properties**
 
-spring.datasource.url=jdbc:postgresql://${DB_HOST_URL}:5432/${DB_NAME}
-spring.datasource.username=${DB_USERNAME}
-spring.datasource.password=${DB_PASSWORD}
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-server.servlet.context-path=/api/v1
-server.port=${PORT}
+  DB Config
+    spring.datasource.url=jdbc:postgresql://${DB_HOST_URL:localhost}:5432/${DB_NAME:AirBnb}
+    spring.datasource.username=${DB_USERNAME:postgres}
+    spring.datasource.password=${DB_PASSWORD:admin}
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.show-sql=true
+    spring.jpa.properties.hibernate.format_sql=true
+    server.servlet.context-path=/api/v1
+    server.port=${PORT:8080}
+
+**Docker**
+  docker pull ashmitsharma317/airbnb-app:1.0.0
+  docker run -p 8080:8080 ashmitsharma317/airbnb-app:1.0.0
+
 
 **Setup & Run Instructions**
   
@@ -110,6 +116,7 @@ Prerequisites
   b. Maven 3+
   c. PostgreSQL
   d. Git
+  e. Docker
 
 **Scalability Considerations**
 
@@ -125,7 +132,7 @@ Prerequisites
   Redis caching
   Review & rating system
   Advanced search filters
-  Docker & Kubernetes deployment
+  Kubernetes deployment
 
  **Author**
 
